@@ -1,14 +1,10 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-const PrimaryButton = ({ children }) => {
-  function handlePress() {
-    console.log('Button pressed')
-  }
-
+const PrimaryButton = ({ children, onPress }) => {
   return (
     <View style={styles.buttonOuterContainer}>
       <Pressable
-        onPress={handlePress}
+        onPress={onPress}
         style={({ pressed }) =>
           pressed
             ? [styles.buttonInnerContainer, styles.pressed]
