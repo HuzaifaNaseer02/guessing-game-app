@@ -46,8 +46,12 @@ const GameScreen = ({ userChoice }) => {
       <View>
         <Text>Higher or Lower?</Text>
         <View style={styles.buttonContainer}>
-          <PrimaryButton onPress={nextGuessHandler}>+</PrimaryButton>
-          <PrimaryButton onPress={nextGuessHandler}>-</PrimaryButton>
+          <PrimaryButton onPress={nextGuessHandler.bind(this, 'lower')}>
+            -
+          </PrimaryButton>
+          <PrimaryButton onPress={nextGuessHandler.bind(this, 'greater')}>
+            +
+          </PrimaryButton>
         </View>
       </View>
       {/* <View>LOG ROUNDS</View> */}
