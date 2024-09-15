@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Alert } from 'react-native'
 import { useState } from 'react'
 import Title from '../components/ui/Title'
 import PrimaryButton from '../components/ui/PrimaryButton'
@@ -26,6 +26,15 @@ const GameScreen = ({ userChoice }) => {
   const [currentGuess, setCurrentGuess] = useState(initialGuess)
 
   function nextGuessHandler(direction) {
+    if (
+      (direction === 'lower' && currentGuess < userChoice) ||
+      (direction === 'greater' && currentGuess > userChoice)
+    ) {
+      Alert.alert("Don't lie!", 'You know that this is wrong...', [
+        { text: 'Sorry!', style: 'cancel' }
+      ])
+      return
+    }
     if (direction === 'lower') {
       maxBoundary = currentGuess
     } else {
@@ -36,7 +45,7 @@ const GameScreen = ({ userChoice }) => {
       maxBoundary,
       currentGuess
     )
-    setCurrentGuess(nextNumber)
+    setCurrentGuess(nextRndNumber)
   }
 
   return (
@@ -45,7 +54,7 @@ const GameScreen = ({ userChoice }) => {
       <NumberContainer>{currentGuess}</NumberContainer>
       <View>
         <Text>Higher or Lower?</Text>
-        <View style={styles.buttonContainer}>
+        <View>
           <PrimaryButton onPress={nextGuessHandler.bind(this, 'lower')}>
             -
           </PrimaryButton>
@@ -65,11 +74,7 @@ const styles = StyleSheet.create({
     padding: 24
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-    width: 300,
-    maxWidth: '80%'
+    flexDirection: 'row'
   }
 })
 
