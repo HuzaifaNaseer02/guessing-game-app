@@ -1,4 +1,4 @@
-import { View, StyleSheet, Alert } from 'react-native'
+import { View, StyleSheet, Alert, FlatList } from 'react-native'
 import { useState, useEffect } from 'react'
 import Title from '../components/ui/Title'
 import PrimaryButton from '../components/ui/PrimaryButton'
@@ -6,6 +6,7 @@ import NumberContainer from '../components/game/NumberContainer'
 import Card from '../components/ui/Card'
 import InstructionText from '../components/ui/InstructionText'
 import { Ionicons } from '@expo/vector-icons'
+import GuessLogItem from '../components/game/GuessLogItem'
 
 function generateRandomBetween(min, max, exclude) {
   const rndNum = Math.floor(Math.random() * (max - min)) + min
@@ -23,12 +24,18 @@ let maxBoundary = 100
 const GameScreen = ({ userChoice, onGameOver }) => {
   const initialGuess = generateRandomBetween(1, 100, userChoice)
   const [currentGuess, setCurrentGuess] = useState(initialGuess)
+  const [guessRounds, setGuessRounds] = useState([initialGuess])
 
   useEffect(() => {
     if (currentGuess === userChoice) {
-      onGameOver()
+      onGameOver(guessRounds.length)
     }
   }, [currentGuess, userChoice, onGameOver])
+
+  useEffect(() => {
+    minBoundary = 1
+    maxBoundary = 100
+  }, [])
 
   function nextGuessHandler(direction) {
     if (
@@ -51,7 +58,10 @@ const GameScreen = ({ userChoice, onGameOver }) => {
       currentGuess
     )
     setCurrentGuess(nextRndNumber)
+    setGuessRounds((currentRounds) => [nextRndNumber, ...currentRounds])
   }
+
+  const guessRoundsListLength = guessRounds.length
 
   return (
     <View style={styles.screen}>
@@ -74,7 +84,19 @@ const GameScreen = ({ userChoice, onGameOver }) => {
           </View>
         </View>
       </Card>
-      {/* <View>LOG ROUNDS</View> */}
+      <View style={styles.listContainer}>
+        <FlatList
+          data={guessRounds}
+          renderItem={(itemData) => (
+            <GuessLogItem
+              roundNumber={guessRoundsListLength - itemData.index}
+              guess={itemData.item}
+            />
+          )}
+          keyExtractor={(item) => item.toString()}
+          contentContainerStyle={{ alignItems: 'center' }}
+        />
+      </View>
     </View>
   )
 }
@@ -95,6 +117,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     marginTop: 16
+  },
+  listContainer: {
+    flex: 1,
+    padding: 16
   }
 })
 
